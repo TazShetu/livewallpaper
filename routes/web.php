@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\BannerImageController;
 
 
 
@@ -89,6 +90,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/images/upload', [ImageController::class, 'uploadStore'])->name('image.upload.store');
     Route::get('/images/list', [ImageController::class, 'listImage'])->name('image.list');
     Route::delete('/images/delete/{iid}', [ImageController::class, 'deleteImage'])->name('image.delete');
+
+    Route::get('/banner_image', [BannerImageController::class, 'index'])->name('banner');
+    Route::post('/banner_image', [BannerImageController::class, 'store'])->name('banner.store');
+    Route::delete('/banner_image/delete/{bid}', [BannerImageController::class, 'destroy'])->name('banner.delete');
+
 
 
 

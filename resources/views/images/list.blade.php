@@ -57,7 +57,7 @@
                                         @method('DELETE')
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-danger m-1"
-                                                onclick="return confirm('Are you sure you want to delete the Video?')">
+                                                onclick="return confirm('Are you sure you want to delete the Image?')">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
                                     </form>

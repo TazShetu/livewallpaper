@@ -70,6 +70,7 @@
                 @permission('image')
                 <li><a href="{{route('image.upload')}}"><i class="glyphicon glyphicon-minus"></i> Upload</a></li>
                 <li><a href="{{route('image.list')}}"><i class="glyphicon glyphicon-minus"></i> List</a></li>
+                <li><a href="{{route('banner')}}"><i class="glyphicon glyphicon-minus"></i> Banner</a></li>
                 @endpermission
             </ul>
         </li>
