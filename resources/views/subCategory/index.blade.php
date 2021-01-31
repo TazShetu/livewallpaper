@@ -23,7 +23,8 @@
                     <h3 class="panel-title">Sub Category Create</h3>
                 </div>
                 {{--     Form Start              --}}
-                <form action="{{route('sub.category.store')}}" class="form-horizontal" method="post">
+                <form action="{{route('sub.category.store')}}" class="form-horizontal" method="post"
+                      enctype="multipart/form-data">
                     @csrf
                     <div class="panel-body">
                         <div class="form-group">
@@ -60,7 +61,7 @@
                             <div class="col-md-6 col-xs-12">
                                 <div class="input-group">
                                     <span class="input-group-addon"><span class="fa fa-pencil"></span></span>
-                                    <input type="text" placeholder="Video Sub Category One Description" name="description"
+                                    <input type="text" placeholder="Sub Category Description" name="description"
                                            value="{{old('description')}}"
                                            class="form-control {{$errors->has('description') ? 'is-invalid' : ''}}">
                                 </div>
@@ -68,6 +69,40 @@
                                     <span class="help-block text-danger">{{$errors->first('description')}}</span>
                                 @endif
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">Is Menu</label>
+                            <div class="col-md-6 col-xs-12">
+                                <select class="form-control" name="is_menu" required id="IsMenu">
+                                    <option selected value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                                @if($errors->has('is_menu'))
+                                    <span class="help-block text-danger">{{$errors->first('is_menu')}}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">
+                                <span>Thumbnail Image</span>
+                            </label>
+                            <div class="col-md-6 col-xs-12">
+                                <input class="imageClass" type="file" name="thumb_image">
+                            </div>
+                            @if($errors->has('thumb_image'))
+                                <span class="help-block text-danger">{{$errors->first('thumb_image')}}</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">
+                                <span>Background Image</span>
+                            </label>
+                            <div class="col-md-6 col-xs-12">
+                                <input class="imageClass" type="file" name="background_image">
+                            </div>
+                            @if($errors->has('background_image'))
+                                <span class="help-block text-danger">{{$errors->first('background_image')}}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="panel-footer">
@@ -79,7 +114,7 @@
                 {{--     Form end               --}}
             </div>
         </div>
-        <div class="col-lg-8 offset-lg-2">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">All Sub Categories</h3>
@@ -91,7 +126,9 @@
                             <th>#</th>
                             <th>Category</th>
                             <th>Name</th>
-                            <th>Description</th>
+                            <th>Is Menu</th>
+                            <th>Thumb</th>
+                            <th>Background</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -101,7 +138,13 @@
                                 <th scope="row">{{$i + 1}}</th>
                                 <td>{{$c->category_name}}</td>
                                 <td>{{$c->name}}</td>
-                                <td>{{$c->description}}</td>
+                                <td>{{(($c->is_menu * 1) == 1) ? 'Yes' : 'No'}}</td>
+                                <td>
+                                    <img src="{{asset($c->image_thumb)}}" width="50">
+                                </td>
+                                <td>
+                                    <img src="{{asset($c->image_background)}}" width="100">
+                                </td>
                                 <td>
                                     <a href="{{route('sub.category.edit', ['cid' => $c->id])}}"
                                        class="btn btn-sm btn-success m-1"><span class="fa fa-pencil"></span></a>
@@ -134,5 +177,17 @@
     {{--    <script type="text/javascript" src="{{asset('joli/js/plugins/bootstrap/bootstrap-select.js')}}"></script>--}}
     {{--    <script type="text/javascript" src="{{asset('joli/js/plugins/tagsinput/jquery.tagsinput.min.js')}}"></script>--}}
     <!-- END THIS PAGE PLUGINS-->
+    <script>
+        $(function () {
+            $("#IsMenu").on('change', function () {
+                let isMenu = $(this).val();
+                if (isMenu == 1) {
+                    $(".imageClass").prop('required', true);
+                } else {
+                    $(".imageClass").prop('required', false);
+                }
+            });
+        });
+    </script>
 @endsection
 

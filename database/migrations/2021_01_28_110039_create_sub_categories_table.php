@@ -13,7 +13,10 @@ class CreateSubCategoriesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('category_id')->index();
             $table->string('name');
+            $table->smallInteger('is_menu')->default(0)->index();
             $table->text('description')->nullable();
+            $table->string('image_thumb')->nullable();
+            $table->string('image_background')->nullable();
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')
