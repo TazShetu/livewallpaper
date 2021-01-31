@@ -29,19 +29,22 @@ class CategoryController extends Controller
         if (Auth::user()->isAbleTo('category')) {
             $request->validate([
                 'name' => 'required|unique:categories,name',
+                'is_new' => 'required',
             ]);
             DB::beginTransaction();
             try {
                 $c = new Category;
                 $c->name = $request->name;
                 $c->description = $request->description;
+                $c->is_new = $request->is_new;
                 $c->save();
 //            Cache::forget('all');
-//            if (Cache::has('video_categories')) {
-//                Cache::forget('video_categories');
-//                $a = VideoCategory::all();
-//                Cache::put('video_categories', $a, now()->addMonths(1));
-//            }
+                if (($c->is_new * 1) == 1) {
+                    $this->newCache();
+                }
+                $this->menuCache();
+                $this->homeCache();
+
                 $sc = new SubCategory;
                 $sc->category_id = $c->id;
                 $sc->name = 'Default';
@@ -86,6 +89,7 @@ class CategoryController extends Controller
         if (Auth::user()->isAbleTo('category')) {
             $request->validate([
                 'name' => 'required',
+                'is_new' => 'required',
             ]);
             $cedit = Category::find($cid);
             if ($cedit) {
@@ -96,13 +100,14 @@ class CategoryController extends Controller
                 }
                 $cedit->name = $request->name;
                 $cedit->description = $request->description;
+                $cedit->is_new = $request->is_new;
                 $cedit->update();
 //                Cache::forget('all');
-//                if (Cache::has('video_categories')) {
-//                    Cache::forget('video_categories');
-//                    $a = VideoCategory::all();
-//                    Cache::put('video_categories', $a, now()->addMonths(1));
-//                }
+                $this->newCache();
+                $this->menuCache();
+                $this->homeCache();
+                $this->imageCidCache($cid);
+
                 Session::flash('success', "The Category has been updated successfully.");
                 return redirect()->back();
             } else {
@@ -127,4 +132,16 @@ class CategoryController extends Controller
             abort(403);
         }
     }
+
+
+    public function newCache()
+    {
+        if (Cache::has('new')) {
+            Cache::forget('new');
+        }
+        $a = Category::where('is_new', 1)->get();
+        Cache::put('new', $a, now()->addMonths(1));
+    }
+
+
 }

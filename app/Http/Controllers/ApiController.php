@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BannerImage;
+use App\Models\Category;
+use App\Models\Image;
 use App\Models\Music;
+use App\Models\SubCategory;
 use App\Models\Video;
 use App\Models\VideoCategory;
 use App\Models\VideoSubCategoryOne;
@@ -40,10 +44,8 @@ class ApiController extends Controller
 //            Passport::personalAccessTokensExpireIn(now()->addWeeks(1));
 //            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
                 Passport::personalAccessTokensExpireIn(now()->addDays(365));
-
                 $responseArray['token'] = $user->createToken('userToken', ['user'])->accessToken;
                 $responseArray['expire'] = "365 days from now";
-
                 return response()->json($responseArray, 200);
             } else {
                 return response()->json([
@@ -58,182 +60,121 @@ class ApiController extends Controller
     }
 
 
-    public function getCategories()
+    public function getMenus()
     {
-        if (Cache::has('video_categories')) {
-            $a = Cache::get('video_categories');
-        } else {
-            $a = VideoCategory::all();
-            Cache::put('video_categories', $a, now()->addMonths(1));
-        }
         $responseArray = [];
-        $responseArray['categories'] = $a;
-        if (count($a) == 0) {
-            $responseArray['message'] = "Nothing found in Database";
-            return response()->json($responseArray, 200);
+        if (Cache::has('new')) {
+            $a = Cache::get('new');
         } else {
-            return response()->json($responseArray, 200);
+            $a = Category::where('is_new', 1)->get();
+            Cache::put('new', $a, now()->addMonths(1));
         }
-    }
-
-
-    public function getSubCategoriesOne($cid)
-    {
-        $c = VideoCategory::find($cid);
-        if ($c) {
-            if (Cache::has('video_sub_categories_one' . "$cid")) {
-                $a = Cache::get('video_sub_categories_one' . "$cid");
-            } else {
-                $a = VideoSubCategoryOne::where('category_id', $cid)->get();
-                Cache::put('video_sub_categories_one' . "$cid", $a, now()->addMonths(1));
-            }
-            $responseArray = [];
-            $responseArray['subCategoriesOne'] = $a;
-            if (count($a) == 0) {
-                $responseArray['message'] = "Nothing found in Database";
-                return response()->json($responseArray, 200);
-            } else {
-                return response()->json($responseArray, 200);
-            }
+        if (Cache::has('menu')) {
+            $cc = Cache::get('menu');
         } else {
-            return response()->json([
-                'error' => 'Wrong Category Id provided in the endpoint'
-            ], 404);
-        }
-    }
-
-
-    public function getSubCategoriesTwo($cid, $scid)
-    {
-        $category = VideoCategory::find($cid);
-        if ($category) {
-            $sc = VideoSubCategoryOne::find($scid);
-            if ($sc) {
-                if (Cache::has('video_sub_categories_two' . "$scid")) {
-                    $a = Cache::get('video_sub_categories_two' . "$scid");
-                } else {
-                    $a = VideoSubCategoryTwo::where('category_id', $cid)->where('sub_category_one_id', $scid)->get();
-                    foreach ($a as $i => $b) {
-                        $videos = Video::where('sub_category_two_id', $b->id)->get();
-                        $b['totalVideos'] = count($videos);
-                        $tc = 0;
-                        foreach ($videos as $v) {
-                            $tc = $tc + ($v->calorie * 1);
-                        }
-                        $b['totalCalories'] = $tc;
-                    }
-                    Cache::put('video_sub_categories_two' . "$scid", $a, now()->addMonths(1));
+            $cc = [];
+            $categories = Category::all();
+            foreach ($categories as $c) {
+                $c['subCategory'] = SubCategory::where('category_id', $c->id)->where('is_menu', 1)->get();
+                if (count($c['subCategory']) > 0) {
+                    $cc[] = $c;
                 }
-                $responseArray = [];
-                $responseArray['subCategoriesTwo'] = $a;
-                if (count($a) == 0) {
-                    $responseArray['message'] = "Nothing found in Database for Category Id $cid and Sub Category One Id $scid";
-                    return response()->json($responseArray, 200);
-                } else {
-                    return response()->json($responseArray, 200);
-                }
-            } else {
-                return response()->json([
-                    'error' => 'Wrong Sub Category One Id provided in the endpoint'
-                ], 404);
             }
-        }else {
-            return response()->json([
-                'error' => 'Wrong Category Id provided in the endpoint'
-            ], 404);
+            Cache::put('menu', $cc, now()->addMonths(1));
         }
-
+        $responseArray['new'] = $a;
+        $responseArray['menu'] = $cc;
+        return response()->json($responseArray, 200);
     }
 
 
-    public function getVideosFromSidTwo($cid, $sc1id, $sc2id)
+    public function getBanners()
     {
-        $category = VideoCategory::find($cid);
-        if ($category) {
-            $sc = VideoSubCategoryOne::find($sc1id);
-            if ($sc) {
-                $sc2 = VideoSubCategoryTwo::find($sc2id);
-                if ($sc2) {
-                    if (Cache::has('video' . "$sc2id")) {
-                        $a = Cache::get('video' . "$sc2id");
-                    } else {
-                        $a = Video::where('category_id', $cid)->where('sub_category_one_id', $sc1id)
-                                                                        ->where('sub_category_two_id', $sc2id)->get();
-                        Cache::put('video' . "$sc2id", $a, now()->addMonths(1));
-                    }
-                    $responseArray = [];
-                    $responseArray['videos'] = $a;
-                    if (count($a) == 0) {
-                        $responseArray['message'] = "Nothing found in Database Category Id $cid , Sub Category One Id $sc1id and Sub Category Two Id $sc2id";
-                        return response()->json($responseArray, 200);
-                    } else {
-                        return response()->json($responseArray, 200);
-                    }
-                } else {
-                    return response()->json([
-                        'error' => 'Wrong Sub Category Two Id provided in the endpoint'
-                    ], 404);
-                }
-            } else {
-                return response()->json([
-                    'error' => 'Wrong Sub Category One Id provided in the endpoint'
-                ], 404);
-            }
-        }else {
-            return response()->json([
-                'error' => 'Wrong Category Id provided in the endpoint'
-            ], 404);
-        }
-    }
-
-
-    public function getMusic()
-    {
-        if (Cache::has('music')) {
-            $a = Cache::get('music');
-        } else {
-            $a = Music::all();
-            Cache::put('music', $a, now()->addMonths(1));
-        }
         $responseArray = [];
-        $responseArray['musics'] = $a;
-        if (count($a) == 0) {
-            $responseArray['message'] = "Nothing found in Database";
-            return response()->json($responseArray, 200);
+        if (Cache::has('banner')) {
+            $a = Cache::get('banner');
         } else {
-            return response()->json($responseArray, 200);
+            $a = BannerImage::all();
+            Cache::put('banner', $a, now()->addMonths(1));
         }
+        $responseArray['banner'] = $a;
+        return response()->json($responseArray, 200);
     }
 
 
-    public function all()
+    public function home()
     {
-        if (Cache::has('all')) {
-            $a = Cache::get('all');
-        } else {
-            $a = VideoCategory::all();
-            foreach ($a as $b) {
-                $sc1s = VideoSubCategoryOne::where('category_id', $b->id)->get();
-                $b['subCategoriesOne'] = $sc1s;
-                foreach ($b['subCategoriesOne'] as $sc1) {
-                    $sc2s = VideoSubCategoryTwo::where('sub_category_one_id', $sc1->id)->get();
-                    $sc1['subCategoriesTwo'] = $sc2s;
-                    foreach ($sc1['subCategoriesTwo'] as $sc2) {
-                        $vs = Video::where('sub_category_two_id', $sc2->id)->get();
-                        $sc2['videos'] = $vs;
-                    }
-                }
-            }
-            Cache::put('all', $a, now()->addMonths(1));
-        }
         $responseArray = [];
-        $responseArray['all'] = $a;
-        if (count($a) == 0) {
-            $responseArray['message'] = "Nothing found in Database";
-            return response()->json($responseArray, 200);
+
+
+        if (Cache::has('home')) {
+            $categories = Cache::get('home');
         } else {
-            return response()->json($responseArray, 200);
+            $categories = Category::all();
+            foreach ($categories as $c) {
+                $c['images'] = Image::where('category_id', $c->id)->orderBy('id', 'DESC')->get();
+            }
+            Cache::put('home', $categories, now()->addMonths(1));
         }
+        $responseArray['images'] = $categories;
+        return response()->json($responseArray, 200);
+    }
+
+
+    public function imageFromCategory($cid)
+    {
+        $responseArray = [];
+        if (Cache::has('imageC'.$cid)) {
+            $a = Cache::get('imageC'.$cid);
+        } else {
+            $a = [];
+            $images = Image::where('category_id', $cid)->orderBy('id', 'DESC')->get();
+            foreach ($images as $i) {
+                if (($i->category_id * 1) == 3) {
+                    // cid 3 is for theme
+                    $i['image_lockScreen'] = $i->image_1;
+                    $i['image_homeScreen'] = $i->image_2;
+                } else {
+                    $i['image_main'] = $i->image_1;
+                    $i['image_placeholder'] = $i->image_2;
+                }
+                unset($i['image_1']);
+                unset($i['image_2']);
+                $a[] = $i;
+            }
+            Cache::put('imageC'.$cid, $a, now()->addMonths(1));
+        }
+        $responseArray['images'] = $a;
+        return response()->json($responseArray, 200);
+    }
+
+
+
+    public function imageFromSubCategory($scid)
+    {
+        $responseArray = [];
+        if (Cache::has('imageSC'.$scid)) {
+            $a = Cache::get('imageSC'.$scid);
+        } else {
+            $a = [];
+            $images = Image::where('sub_category_id', $scid)->orderBy('id', 'DESC')->get();
+            foreach ($images as $i) {
+                if (($i->category_id * 1) == 3) {
+                    // cid 3 is for theme
+                    $i['image_lockScreen'] = $i->image_1;
+                    $i['image_homeScreen'] = $i->image_2;
+                } else {
+                    $i['image_main'] = $i->image_1;
+                    $i['image_placeholder'] = $i->image_2;
+                }
+                unset($i['image_1']);
+                unset($i['image_2']);
+                $a[] = $i;
+            }
+            Cache::put('imageSC'.$scid, $a, now()->addMonths(1));
+        }
+        $responseArray['images'] = $a;
+        return response()->json($responseArray, 200);
     }
 
 

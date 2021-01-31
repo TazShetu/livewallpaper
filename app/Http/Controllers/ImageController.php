@@ -68,11 +68,9 @@ class ImageController extends Controller
 
             $i->save();
 //            Cache::forget('all');
-//            if (Cache::has('video' . "$v->sub_category_two_id")) {
-//                Cache::forget('video' . "$v->sub_category_two_id");
-//                $a = Video::where('sub_category_two_id', $v->sub_category_two_id)->get();
-//                Cache::put('video' . "$v->sub_category_two_id", $a, now()->addMonths(1));
-//            }
+            $this->imageCidCache($i->category_id);
+            $this->imageScidCache($i->sub_category_id);
+            $this->homeCache();
             Session::flash('success', "The image has benn uploaded successfully.");
             return redirect()->back();
         } else {
@@ -104,17 +102,16 @@ class ImageController extends Controller
         if (Auth::user()->isAbleTo('image')) {
             $i = Image::find($iid);
             if ($i) {
-//                $vsc2id = $v->sub_category_two_id;
+                $cid = $i->category_id;
+                $scid = $i->sub_category_id;
                 unlink($i->image_thumb);
                 unlink($i->image_1);
                 unlink($i->image_2);
                 $i->delete();
 //                Cache::forget('all');
-//                if (Cache::has('video' . "$vsc2id")) {
-//                    Cache::forget('video' . "$vsc2id");
-//                    $a = Video::where('sub_category_two_id', $vsc2id)->get();
-//                    Cache::put('video' . "$vsc2id", $a, now()->addMonths(1));
-//                }
+                $this->imageCidCache($cid);
+                $this->imageScidCache($scid);
+                $this->homeCache();
                 Session::flash('success', "The image has benn deleted successfully.");
                 return redirect()->back();
             } else {
@@ -124,6 +121,9 @@ class ImageController extends Controller
             abort(403);
         }
     }
+
+
+
 
 
 }

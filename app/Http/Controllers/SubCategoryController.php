@@ -64,11 +64,9 @@ class SubCategoryController extends Controller
             }
             $sc1->save();
 //            Cache::forget('all');
-//            if (Cache::has('video_sub_categories_one'."$sc1->category_id")) {
-//                Cache::forget('video_sub_categories_one'."$sc1->category_id");
-//                $a = VideoSubCategoryOne::where('category_id', $sc1->category_id)->get();
-//                Cache::put('video_sub_categories_one'."$sc1->category_id", $a, now()->addMonths(1));
-//            }
+            if (($sc1->is_menu * 1) == 1) {
+                $this->menuCache();
+            }
             Session::flash('success', "The Sub Category has been created successfully.");
             return redirect()->back();
         } else {
@@ -123,7 +121,9 @@ class SubCategoryController extends Controller
                 $cedit->description = $request->description;
                 $cedit->is_menu = $request->is_menu;
                 if ($request->hasFile('thumb_image')) {
-                    unlink($cedit->image_thumb);
+                    if ($cedit->image_thumb != null) {
+                        unlink($cedit->image_thumb);
+                    }
                     $imgThumb = $request->thumb_image;
                     $img_name = time() . urlencode(str_replace(" ", "_", $imgThumb->getClientOriginalName()));
                     $a = $imgThumb->move('uploads/subCategory', $img_name);
@@ -131,7 +131,9 @@ class SubCategoryController extends Controller
                     $cedit->image_thumb = $d;
                 }
                 if ($request->hasFile('background_image')) {
-                    unlink($cedit->image_background);
+                    if ($cedit->image_background != null) {
+                        unlink($cedit->image_background);
+                    }
                     $imgOne = $request->background_image;
                     if ($request->hasFile('thumb_image')) {
                         $imgThumb = $request->thumb_image;
@@ -146,11 +148,9 @@ class SubCategoryController extends Controller
                 }
                 $cedit->update();
 //                Cache::forget('all');
-//                if (Cache::has('video_sub_categories_one'."$cedit->category_id")) {
-//                    Cache::forget('video_sub_categories_one'."$cedit->category_id");
-//                    $a = VideoSubCategoryOne::where('category_id', $cedit->category_id)->get();
-//                    Cache::put('video_sub_categories_one'."$cedit->category_id", $a, now()->addMonths(1));
-//                }
+                $this->menuCache();
+                $this->imageScidCache($cid);
+
                 Session::flash('success', "The Sub Category has been updated successfully.");
                 return redirect()->back();
             } else {
@@ -175,4 +175,6 @@ class SubCategoryController extends Controller
             abort(403);
         }
     }
+
+
 }

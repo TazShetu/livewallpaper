@@ -57,6 +57,18 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">Is New</label>
+                            <div class="col-md-6 col-xs-12">
+                                <select class="form-control" name="is_new" required>
+                                    <option value="0">No</option>
+                                    <option {{(($cedit->is_new * 1) == 1) ? 'selected' : ''}} value="1">Yes</option>
+                                </select>
+                                @if($errors->has('is_new'))
+                                    <span class="help-block text-danger">{{$errors->first('is_new')}}</span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-footer">
                         <a title="refresh" class="btn btn-default back" data-link="{{route('back')}}"><span
@@ -79,6 +91,7 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Is New</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -88,6 +101,7 @@
                                 <th scope="row">{{$i + 1}}</th>
                                 <td>{{$c->name}}</td>
                                 <td>{{$c->description}}</td>
+                                <td>{{(($c->is_new * 1) == 1) ? 'Yes' : 'No'}}</td>
                                 <td>
                                     @if($c->id != $cedit->id)
                                         <a href="{{route('category.edit', ['cid' => $c->id])}}"

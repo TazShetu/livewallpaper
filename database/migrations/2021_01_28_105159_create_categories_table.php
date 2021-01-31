@@ -13,6 +13,7 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
+            $table->smallInteger('is_new')->default(0)->index();
             $table->timestamps();
         });
     }

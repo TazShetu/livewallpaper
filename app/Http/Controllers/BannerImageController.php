@@ -6,6 +6,7 @@ use App\Models\BannerImage;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -42,11 +43,7 @@ class BannerImageController extends Controller
             $i->image = $d;
             $i->save();
 //            Cache::forget('all');
-//            if (Cache::has('video' . "$v->sub_category_two_id")) {
-//                Cache::forget('video' . "$v->sub_category_two_id");
-//                $a = Video::where('sub_category_two_id', $v->sub_category_two_id)->get();
-//                Cache::put('video' . "$v->sub_category_two_id", $a, now()->addMonths(1));
-//            }
+            $this->bannerCache();
             Session::flash('success', "The banner image has benn uploaded successfully.");
             return redirect()->back();
         } else {
@@ -64,11 +61,7 @@ class BannerImageController extends Controller
                 unlink($i->image);
                 $i->delete();
 //                Cache::forget('all');
-//                if (Cache::has('video' . "$vsc2id")) {
-//                    Cache::forget('video' . "$vsc2id");
-//                    $a = Video::where('sub_category_two_id', $vsc2id)->get();
-//                    Cache::put('video' . "$vsc2id", $a, now()->addMonths(1));
-//                }
+                $this->bannerCache();
                 Session::flash('success', "The banner image has benn deleted successfully.");
                 return redirect()->back();
             } else {
@@ -77,6 +70,16 @@ class BannerImageController extends Controller
         } else {
             abort(403);
         }
+    }
+
+
+    public function bannerCache()
+    {
+        if (Cache::has('banner')) {
+            Cache::forget('banner');
+        }
+        $a = BannerImage::all();
+        Cache::put('banner', $a, now()->addMonths(1));
     }
 
 
