@@ -149,7 +149,7 @@ class SubCategoryController extends Controller
                 $cedit->update();
 //                Cache::forget('all');
                 $this->menuCache();
-                $this->imageScidCache($cid);
+//                $this->imageScidCache($cid);
 
                 Session::flash('success', "The Sub Category has been updated successfully.");
                 return redirect()->back();

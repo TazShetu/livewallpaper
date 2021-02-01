@@ -73,16 +73,6 @@ class BannerImageController extends Controller
     }
 
 
-    public function bannerCache()
-    {
-        if (Cache::has('banner')) {
-            Cache::forget('banner');
-        }
-        $a = BannerImage::all();
-        Cache::put('banner', $a, now()->addMonths(1));
-    }
-
-
 
 
 }

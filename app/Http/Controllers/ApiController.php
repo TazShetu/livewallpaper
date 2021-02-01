@@ -66,57 +66,47 @@ class ApiController extends Controller
         if (Cache::has('new')) {
             $a = Cache::get('new');
         } else {
-            $a = Category::where('is_new', 1)->get();
-            Cache::put('new', $a, now()->addMonths(1));
+            $a = $this->newCacheMain();
         }
+        $responseArray['new'] = $a;
         if (Cache::has('menu')) {
             $cc = Cache::get('menu');
         } else {
-            $cc = [];
-            $categories = Category::all();
-            foreach ($categories as $c) {
-                $c['subCategory'] = SubCategory::where('category_id', $c->id)->where('is_menu', 1)->get();
-                if (count($c['subCategory']) > 0) {
-                    $cc[] = $c;
-                }
-            }
-            Cache::put('menu', $cc, now()->addMonths(1));
+            $cc = $this->menuCacheManin();
         }
-        $responseArray['new'] = $a;
         $responseArray['menu'] = $cc;
         return response()->json($responseArray, 200);
     }
 
 
-    public function getBanners()
-    {
-        $responseArray = [];
-        if (Cache::has('banner')) {
-            $a = Cache::get('banner');
-        } else {
-            $a = BannerImage::all();
-            Cache::put('banner', $a, now()->addMonths(1));
-        }
-        $responseArray['banner'] = $a;
-        return response()->json($responseArray, 200);
-    }
+//    public function getBanners()
+//    {
+//        $responseArray = [];
+//        if (Cache::has('banner')) {
+//            $a = Cache::get('banner');
+//        } else {
+//            $a = $this->bannerCacheMain();
+//        }
+//        $responseArray['banner'] = $a;
+//        return response()->json($responseArray, 200);
+//    }
 
 
     public function home()
     {
         $responseArray = [];
-
-
+        if (Cache::has('banner')) {
+            $a = Cache::get('banner');
+        } else {
+            $a = $this->bannerCacheMain();
+        }
+        $responseArray['banner'] = $a;
         if (Cache::has('home')) {
             $categories = Cache::get('home');
         } else {
-            $categories = Category::all();
-            foreach ($categories as $c) {
-                $c['images'] = Image::where('category_id', $c->id)->orderBy('id', 'DESC')->get();
-            }
-            Cache::put('home', $categories, now()->addMonths(1));
+            $categories = $this->homeCacheMain();
         }
-        $responseArray['images'] = $categories;
+        $responseArray['categories'] = $categories;
         return response()->json($responseArray, 200);
     }
 
@@ -124,27 +114,17 @@ class ApiController extends Controller
     public function imageFromCategory($cid)
     {
         $responseArray = [];
-        if (Cache::has('imageC'.$cid)) {
-            $a = Cache::get('imageC'.$cid);
-        } else {
-            $a = [];
-            $images = Image::where('category_id', $cid)->orderBy('id', 'DESC')->get();
-            foreach ($images as $i) {
-                if (($i->category_id * 1) == 3) {
-                    // cid 3 is for theme
-                    $i['image_lockScreen'] = $i->image_1;
-                    $i['image_homeScreen'] = $i->image_2;
-                } else {
-                    $i['image_main'] = $i->image_1;
-                    $i['image_placeholder'] = $i->image_2;
-                }
-                unset($i['image_1']);
-                unset($i['image_2']);
-                $a[] = $i;
-            }
-            Cache::put('imageC'.$cid, $a, now()->addMonths(1));
+//        if (Cache::has('imageC'.$cid)) {
+//            $a = Cache::get('imageC'.$cid);
+//        } else {
+//            $a = $this->imageCidCacheMain($cid);
+//        }
+        $images = Image::where('category_id', $cid)->orderBy('id', 'DESC')->paginate(50);
+        $images = $this->manupulateImages($images);
+        foreach ($images as $i) {
+            $i['subCategory'] = SubCategory::find($i->sub_category_id);
         }
-        $responseArray['images'] = $a;
+        $responseArray['images'] = $images;
         return response()->json($responseArray, 200);
     }
 
@@ -153,27 +133,14 @@ class ApiController extends Controller
     public function imageFromSubCategory($scid)
     {
         $responseArray = [];
-        if (Cache::has('imageSC'.$scid)) {
-            $a = Cache::get('imageSC'.$scid);
-        } else {
-            $a = [];
-            $images = Image::where('sub_category_id', $scid)->orderBy('id', 'DESC')->get();
-            foreach ($images as $i) {
-                if (($i->category_id * 1) == 3) {
-                    // cid 3 is for theme
-                    $i['image_lockScreen'] = $i->image_1;
-                    $i['image_homeScreen'] = $i->image_2;
-                } else {
-                    $i['image_main'] = $i->image_1;
-                    $i['image_placeholder'] = $i->image_2;
-                }
-                unset($i['image_1']);
-                unset($i['image_2']);
-                $a[] = $i;
-            }
-            Cache::put('imageSC'.$scid, $a, now()->addMonths(1));
-        }
-        $responseArray['images'] = $a;
+//        if (Cache::has('imageSC'.$scid)) {
+//            $a = Cache::get('imageSC'.$scid);
+//        } else {
+//            $a = $this->imageScidCacheMain($scid);
+//        }
+        $images = Image::where('sub_category_id', $scid)->orderBy('id', 'DESC')->paginate(50);
+        $images = $this->manupulateImages($images);
+        $responseArray['images'] = $images;
         return response()->json($responseArray, 200);
     }
 

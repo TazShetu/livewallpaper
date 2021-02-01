@@ -67,9 +67,8 @@ class ImageController extends Controller
             $i->image_2 = $d2;
 
             $i->save();
-//            Cache::forget('all');
-            $this->imageCidCache($i->category_id);
-            $this->imageScidCache($i->sub_category_id);
+//            $this->imageCidCache($i->category_id);
+//            $this->imageScidCache($i->sub_category_id);
             $this->homeCache();
             Session::flash('success', "The image has benn uploaded successfully.");
             return redirect()->back();
@@ -108,9 +107,8 @@ class ImageController extends Controller
                 unlink($i->image_1);
                 unlink($i->image_2);
                 $i->delete();
-//                Cache::forget('all');
-                $this->imageCidCache($cid);
-                $this->imageScidCache($scid);
+//                $this->imageCidCache($cid);
+//                $this->imageScidCache($scid);
                 $this->homeCache();
                 Session::flash('success', "The image has benn deleted successfully.");
                 return redirect()->back();

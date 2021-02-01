@@ -106,7 +106,7 @@ class CategoryController extends Controller
                 $this->newCache();
                 $this->menuCache();
                 $this->homeCache();
-                $this->imageCidCache($cid);
+//                $this->imageCidCache($cid);
 
                 Session::flash('success', "The Category has been updated successfully.");
                 return redirect()->back();
@@ -133,15 +133,6 @@ class CategoryController extends Controller
         }
     }
 
-
-    public function newCache()
-    {
-        if (Cache::has('new')) {
-            Cache::forget('new');
-        }
-        $a = Category::where('is_new', 1)->get();
-        Cache::put('new', $a, now()->addMonths(1));
-    }
 
 
 }
