@@ -43,9 +43,10 @@ class ApiController extends Controller
 //            Passport::personalAccessTokensExpireIn(now()->addHour(1));
 //            Passport::personalAccessTokensExpireIn(now()->addWeeks(1));
 //            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
-                Passport::personalAccessTokensExpireIn(now()->addDays(365));
-                $responseArray['token'] = $user->createToken('userToken', ['user'])->accessToken;
-                $responseArray['expire'] = "365 days from now";
+                Passport::personalAccessTokensExpireIn(now()->addDays(30));
+//                $responseArray['token'] = $user->createToken('userToken', ['user'])->accessToken;
+                $responseArray['token'] = $user->createToken('userToken')->accessToken;
+                $responseArray['expire'] = "30";
                 return response()->json($responseArray, 200);
             } else {
                 return response()->json([

@@ -25,11 +25,13 @@ Route::post('/v1/login', [ApiController::class, 'loginu']);
 // so when email password does not match laravel auto redirects to login route and show unauthorized....
 Route::get('/login/fail', [ApiController::class, 'loginFail'])->name('loginFail');
 
-Route::get('/v1/menu', [ApiController::class, 'getMenus'])->middleware(['auth:api', 'scope:user']);
-//Route::get('/v1/banner', [ApiController::class, 'getBanners'])->middleware(['auth:api', 'scope:user']);
-Route::get('/v1/home', [ApiController::class, 'home'])->middleware(['auth:api', 'scope:user']);
-Route::get('/v1/category/{cid}/images', [ApiController::class, 'imageFromCategory'])->middleware(['auth:api', 'scope:user']);
-Route::get('/v1/sub_category/{scid}/images', [ApiController::class, 'imageFromSubCategory'])->middleware(['auth:api', 'scope:user']);
+//Route::get('/v1/home', [ApiController::class, 'home'])->middleware(['auth:api', 'scope:user']);
+
+
+Route::get('/v1/menu', [ApiController::class, 'getMenus'])->middleware(['auth:api']);
+Route::get('/v1/home', [ApiController::class, 'home'])->middleware(['auth:api']);
+Route::get('/v1/category/{cid}/images', [ApiController::class, 'imageFromCategory'])->middleware(['auth:api']);
+Route::get('/v1/sub_category/{scid}/images', [ApiController::class, 'imageFromSubCategory'])->middleware(['auth:api']);
 
 
 
