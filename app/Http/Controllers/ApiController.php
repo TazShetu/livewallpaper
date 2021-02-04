@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BannerImage;
-use App\Models\Category;
+//use App\Models\BannerImage;
+//use App\Models\Category;
 use App\Models\Image;
-use App\Models\Music;
 use App\Models\SubCategory;
-use App\Models\Video;
-use App\Models\VideoCategory;
-use App\Models\VideoSubCategoryOne;
-use App\Models\VideoSubCategoryTwo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -122,9 +117,8 @@ class ApiController extends Controller
 //        }
         $images = Image::where('category_id', $cid)->orderBy('id', 'DESC')->paginate(50);
         $images = $this->manupulateImages($images);
-        foreach ($images as $i) {
-            $i['subCategory'] = SubCategory::find($i->sub_category_id);
-        }
+        $responseArray['subCategory'] = SubCategory::where('category_id', $cid)->where('image_thumb', '!=', null)
+                                                                        ->where('image_background', '!=', null)->get();
         $responseArray['images'] = $images;
         return response()->json($responseArray, 200);
     }
