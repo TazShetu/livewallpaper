@@ -55,6 +55,18 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">Is New</label>
+                            <div class="col-md-6 col-xs-12">
+                                <select class="form-control" name="is_new" required>
+                                    <option selected value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                                @if($errors->has('is_new'))
+                                    <span class="help-block text-danger">{{$errors->first('is_new')}}</span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-footer">
                         <a title="refresh" class="btn btn-default back" data-link="{{route('back')}}"><span
@@ -77,6 +89,7 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Is New</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -86,6 +99,7 @@
                                 <th scope="row">{{$i + 1}}</th>
                                 <td>{{$c->name}}</td>
                                 <td>{{$c->description}}</td>
+                                <td>{{(($c->is_new * 1) == 1) ? 'Yes' : 'No'}}</td>
                                 <td>
                                     <a href="{{route('category.edit', ['cid' => $c->id])}}"
                                        class="btn btn-sm btn-success m-1"><span class="fa fa-pencil"></span></a>
@@ -94,7 +108,7 @@
                                         @method('DELETE')
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-danger m-1"
-                                                onclick="return confirm('Are you sure you want to delete the Video Category ?')">
+                                                onclick="return confirm('Are you sure you want to delete the Category ?')">
                                             [[ <i class="fa fa-trash-o"></i> ]]
                                         </button>
                                     </form>

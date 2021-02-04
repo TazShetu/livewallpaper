@@ -1,12 +1,12 @@
 @extends('layouts.joli')
-@section('title', 'Video List')
+@section('title', 'Image List')
 @section('breadcrumb')
     <ul class="breadcrumb">
-        <li>Videos</li>
+        <li>Images</li>
         <li class="active">List</li>
     </ul>
 @endsection
-@section('pageTitle', 'Video List')
+@section('pageTitle', 'Image List')
 @section('content')
     <div class="row mb-5">
         @if(session('unSuccess'))
@@ -21,7 +21,7 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">All Videos</h3>
+                    <h3 class="panel-title">All Images</h3>
                 </div>
                 <div class="panel-body">
                     <table class="table table-hover table-striped">
@@ -29,48 +29,47 @@
                         <tr>
                             <th>#</th>
                             <th>Category</th>
-                            <th>Title</th>
-                            <th>Length</th>
-                            <th>Calorie</th>
-                            <th>Instruction</th>
-                            <th>Action</th>
+                            <th>Sub Category</th>
                             <th>Thumb</th>
+                            <th>Main / Lock</th>
+                            <th>Placeholder / Home</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($videos as $i => $v)
+                        @foreach($images as $i => $v)
                             <tr>
-                                <th scope="row">{{$i + 1}}</th>
+                                <th scope="row">{{$images->firstItem() + $i}}</th>
                                 <td>{{$v->category_name}}</td>
-                                <td>{{$v->title}}</td>
-                                <td>{{$v->length}}</td>
-                                <td>{{$v->calorie}}</td>
-                                <td>{!! $v->instruction !!}</td>
+                                <td>{{$v->sub_category_name}}</td>
                                 <td>
-                                    <a href="{{route('video.play', ['vid' => $v->id])}}"
-                                       class="btn btn-sm btn-info m-1" target="_blank"><span
-                                            class="fa fa-play"></span></a>
-                                    <a href="{{route('video.edit', ['vid' => $v->id])}}"
-                                       class="btn btn-sm btn-success m-1"><span class="fa fa-pencil"></span></a>
-                                    <form action="{{route('video.delete', ['vid' => $v->id])}}" method="POST"
+                                    <img src="{{asset($v->image_thumb)}}" width="50">
+                                </td>
+                                <td>
+                                    <img src="{{asset($v->image_1)}}" width="100">
+                                </td>
+                                <td>
+                                    <img src="{{asset($v->image_2)}}" width="100">
+                                </td>
+                                <td>
+                                    <form action="{{route('image.delete', ['iid' => $v->id])}}" method="POST"
                                           style="display: inline-table;">
                                         @method('DELETE')
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-danger m-1"
-                                                onclick="return confirm('Are you sure you want to delete the Video?')">
+                                                onclick="return confirm('Are you sure you want to delete the Image?')">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
                                     </form>
-                                </td>
-                                <td>
-                                    <video width="144" height="108" controls>
-                                        <source src="{{URL::asset("$v->video")}}" type="video/mp4">
-                                    </video>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
+                </div>
+                <div class="panel-footer">
+                    {{$images->links()}}
+                    <span>Showing {{$images->firstItem()}} - {{$images->lastItem()}} of {{$images->total()}}</span>
                 </div>
             </div>
         </div>

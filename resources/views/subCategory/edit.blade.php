@@ -25,7 +25,7 @@
                 </div>
                 {{--     Form Start              --}}
                 <form action="{{route('sub.category.update', ['cid' => $scOneedit->id])}}" class="form-horizontal"
-                      method="post">
+                      method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="panel-body">
                         <div class="form-group">
@@ -64,7 +64,7 @@
                             <div class="col-md-6 col-xs-12">
                                 <div class="input-group">
                                     <span class="input-group-addon"><span class="fa fa-pencil"></span></span>
-                                    <input type="text" placeholder="Video Sub Category One Description" name="description"
+                                    <input type="text" placeholder="Sub Category Description" name="description"
                                            value="{{$scOneedit->description}}"
                                            class="form-control {{$errors->has('description') ? 'is-invalid' : ''}}">
                                 </div>
@@ -72,6 +72,42 @@
                                     <span class="help-block text-danger">{{$errors->first('description')}}</span>
                                 @endif
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">Is Menu</label>
+                            <div class="col-md-6 col-xs-12">
+                                <select class="form-control" name="is_menu" required id="IsMenu">
+                                    <option value="0">No</option>
+                                    <option {{(($scOneedit->is_menu * 1) == 1) ? 'selected' : ''}} value="1">Yes</option>
+                                </select>
+                                @if($errors->has('is_menu'))
+                                    <span class="help-block text-danger">{{$errors->first('is_menu')}}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">
+                                <span>Thumbnail Image</span>
+                            </label>
+                            <div class="col-md-6 col-xs-12">
+                                <input class="imageClass" type="file" name="thumb_image">
+                            </div>
+                            @if($errors->has('thumb_image'))
+                                <span class="help-block text-danger">{{$errors->first('thumb_image')}}</span>
+                            @endif
+                            <img src="{{asset($scOneedit->image_thumb)}}" width="50">
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label">
+                                <span>Background Image</span>
+                            </label>
+                            <div class="col-md-6 col-xs-12">
+                                <input class="imageClass" type="file" name="background_image">
+                            </div>
+                            @if($errors->has('background_image'))
+                                <span class="help-block text-danger">{{$errors->first('background_image')}}</span>
+                            @endif
+                            <img src="{{asset($scOneedit->image_background)}}" width="100">
                         </div>
                     </div>
                     <div class="panel-footer">
@@ -83,7 +119,7 @@
                 {{--     Form end               --}}
             </div>
         </div>
-        <div class="col-lg-8 offset-lg-2">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">All Sub Categories</h3>
@@ -95,7 +131,9 @@
                             <th>#</th>
                             <th>Category</th>
                             <th>Name</th>
-                            <th>Description</th>
+                            <th>Is Menu</th>
+                            <th>Thumb</th>
+                            <th>Background</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -105,7 +143,13 @@
                                 <th scope="row">{{$i + 1}}</th>
                                 <td>{{$c->category_name}}</td>
                                 <td>{{$c->name}}</td>
-                                <td>{{$c->description}}</td>
+                                <td>{{(($c->is_menu * 1) == 1) ? 'Yes' : 'No'}}</td>
+                                <td>
+                                    <img src="{{asset($c->image_thumb)}}" width="50">
+                                </td>
+                                <td>
+                                    <img src="{{asset($c->image_background)}}" width="100">
+                                </td>
                                 <td>
                                     @if($c->id != $scOneedit->id)
                                         <a href="{{route('sub.category.edit', ['cid' => $c->id])}}"
@@ -115,7 +159,7 @@
                                             @method('DELETE')
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-danger m-1"
-                                                    onclick="return confirm('Are you sure you want to delete the Video Sub Category One ?')">
+                                                    onclick="return confirm('Are you sure you want to delete the Sub Category ?')">
                                                 [[ <i class="fa fa-trash-o"></i> ]]
                                             </button>
                                         </form>

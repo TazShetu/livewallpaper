@@ -63,17 +63,14 @@
             </a>
         </li>
         @endpermission
-
-
-
-
-        @permission('sub_category')
+        @permission('image')
         <li class="xn-openable">
-            <a href="#"><span class="fa fa-youtube-play"></span> <span class="xn-text"> Videos</span></a>
+            <a href="#"><span class="fa fa-picture-o"></span> <span class="xn-text"> Image</span></a>
             <ul>
-                @permission('video')
-                <li><a href="{{route('video.upload')}}"><i class="glyphicon glyphicon-minus"></i> Upload</a></li>
-                <li><a href="{{route('video.list')}}"><i class="glyphicon glyphicon-minus"></i> List</a></li>
+                @permission('image')
+                <li><a href="{{route('image.upload')}}"><i class="glyphicon glyphicon-minus"></i> Upload</a></li>
+                <li><a href="{{route('image.list')}}"><i class="glyphicon glyphicon-minus"></i> List</a></li>
+                <li><a href="{{route('banner')}}"><i class="glyphicon glyphicon-minus"></i> Banner</a></li>
                 @endpermission
             </ul>
         </li>

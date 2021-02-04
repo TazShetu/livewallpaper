@@ -34,18 +34,39 @@ class SubCategoryController extends Controller
             $request->validate([
                 'category_id' => 'required',
                 'name' => 'required',
+                'is_menu' => 'required',
             ]);
+            if (($request->is_menu * 1) == 1) {
+                $request->validate([
+                    'thumb_image' => 'required|file',
+                    'background_image' => 'required|file',
+                ]);
+            }
             $sc1 = new SubCategory;
             $sc1->category_id = $request->category_id;
             $sc1->name = $request->name;
             $sc1->description = $request->description;
+            $sc1->is_menu = $request->is_menu;
+            if ($request->hasFile('thumb_image') && $request->hasFile('background_image')) {
+                $imgThumb = $request->thumb_image;
+                $imgOne = $request->background_image;
+                $img_name = time() . urlencode(str_replace(" ", "_", $imgThumb->getClientOriginalName()));
+                $a = $imgThumb->move('uploads/subCategory', $img_name);
+                $d = 'uploads/subCategory/' . $img_name;
+                $sc1->image_thumb = $d;
+                if ($imgThumb->getClientOriginalName() == $imgOne->getClientOriginalName()) {
+                    sleep(1);
+                }
+                $img_name1 = time() . urlencode(str_replace(" ", "_", $imgOne->getClientOriginalName()));
+                $a = $imgOne->move('uploads/subCategory', $img_name1);
+                $d1 = 'uploads/subCategory/' . $img_name1;
+                $sc1->image_background = $d1;
+            }
             $sc1->save();
 //            Cache::forget('all');
-//            if (Cache::has('video_sub_categories_one'."$sc1->category_id")) {
-//                Cache::forget('video_sub_categories_one'."$sc1->category_id");
-//                $a = VideoSubCategoryOne::where('category_id', $sc1->category_id)->get();
-//                Cache::put('video_sub_categories_one'."$sc1->category_id", $a, now()->addMonths(1));
-//            }
+            if (($sc1->is_menu * 1) == 1) {
+                $this->menuCache();
+            }
             Session::flash('success', "The Sub Category has been created successfully.");
             return redirect()->back();
         } else {
@@ -83,16 +104,53 @@ class SubCategoryController extends Controller
             ]);
             $cedit = SubCategory::find($cid);
             if ($cedit) {
+                if (($request->is_menu * 1) == 1) {
+                    if ($cedit->image_thumb == null) {
+                        $request->validate([
+                            'thumb_image' => 'required|file',
+                        ]);
+                    }
+                    if ($cedit->image_background == null) {
+                        $request->validate([
+                            'background_image' => 'required|file',
+                        ]);
+                    }
+                }
                 $cedit->category_id = $request->category_id;
                 $cedit->name = $request->name;
                 $cedit->description = $request->description;
+                $cedit->is_menu = $request->is_menu;
+                if ($request->hasFile('thumb_image')) {
+                    if ($cedit->image_thumb != null) {
+                        unlink($cedit->image_thumb);
+                    }
+                    $imgThumb = $request->thumb_image;
+                    $img_name = time() . urlencode(str_replace(" ", "_", $imgThumb->getClientOriginalName()));
+                    $a = $imgThumb->move('uploads/subCategory', $img_name);
+                    $d = 'uploads/subCategory/' . $img_name;
+                    $cedit->image_thumb = $d;
+                }
+                if ($request->hasFile('background_image')) {
+                    if ($cedit->image_background != null) {
+                        unlink($cedit->image_background);
+                    }
+                    $imgOne = $request->background_image;
+                    if ($request->hasFile('thumb_image')) {
+                        $imgThumb = $request->thumb_image;
+                        if ($imgThumb->getClientOriginalName() == $imgOne->getClientOriginalName()) {
+                            sleep(1);
+                        }
+                    }
+                    $img_name1 = time() . urlencode(str_replace(" ", "_", $imgOne->getClientOriginalName()));
+                    $a = $imgOne->move('uploads/subCategory', $img_name1);
+                    $d1 = 'uploads/subCategory/' . $img_name1;
+                    $cedit->image_background = $d1;
+                }
                 $cedit->update();
 //                Cache::forget('all');
-//                if (Cache::has('video_sub_categories_one'."$cedit->category_id")) {
-//                    Cache::forget('video_sub_categories_one'."$cedit->category_id");
-//                    $a = VideoSubCategoryOne::where('category_id', $cedit->category_id)->get();
-//                    Cache::put('video_sub_categories_one'."$cedit->category_id", $a, now()->addMonths(1));
-//                }
+                $this->menuCache();
+//                $this->imageScidCache($cid);
+
                 Session::flash('success', "The Sub Category has been updated successfully.");
                 return redirect()->back();
             } else {
@@ -117,4 +175,6 @@ class SubCategoryController extends Controller
             abort(403);
         }
     }
+
+
 }
