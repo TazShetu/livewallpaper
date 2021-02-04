@@ -14,6 +14,8 @@ class CreateCategoriesTable extends Migration
             $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->smallInteger('is_new')->default(0)->index();
+            $table->string('image_thumb')->nullable();
+            $table->string('image_background')->nullable();
             $table->timestamps();
         });
     }
