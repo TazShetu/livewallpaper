@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-//use App\Models\BannerImage;
-//use App\Models\Category;
 use App\Models\Image;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
@@ -15,45 +13,45 @@ use Laravel\Passport\Passport;
 class ApiController extends Controller
 {
 
-    public function loginFail()
-    {
-        return response()->json([
-            'error' => 'Token Error'
-        ], 401);
-    }
+//    public function loginFail()
+//    {
+//        return response()->json([
+//            'error' => 'Token Error'
+//        ], 401);
+//    }
 
 
-    public function loginu(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'user_name' => 'required',
-            'password' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 401);
-        } elseif (Auth::attempt(['user_name' => $request->user_name, 'password' => $request->password])) {
-            $user = Auth::user();
-            if ($user->is_app == 1) {
-                $responseArray = [];
-//            Passport::personalAccessTokensExpireIn(now()->addHour(1));
-//            Passport::personalAccessTokensExpireIn(now()->addWeeks(1));
-//            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
-                Passport::personalAccessTokensExpireIn(now()->addDays(30));
-//                $responseArray['token'] = $user->createToken('userToken', ['user'])->accessToken;
-                $responseArray['token'] = $user->createToken('userToken')->accessToken;
-                $responseArray['expire'] = "30";
-                return response()->json($responseArray, 200);
-            } else {
-                return response()->json([
-                    'error' => 'unauthorized'
-                ], 401);
-            }
-        } else {
-            return response()->json([
-                'error' => 'unauthorized'
-            ], 401);
-        }
-    }
+//    public function loginu(Request $request)
+//    {
+//        $validator = Validator::make($request->all(), [
+//            'user_name' => 'required',
+//            'password' => 'required',
+//        ]);
+//        if ($validator->fails()) {
+//            return response()->json($validator->errors(), 401);
+//        } elseif (Auth::attempt(['user_name' => $request->user_name, 'password' => $request->password])) {
+//            $user = Auth::user();
+//            if ($user->is_app == 1) {
+//                $responseArray = [];
+////            Passport::personalAccessTokensExpireIn(now()->addHour(1));
+////            Passport::personalAccessTokensExpireIn(now()->addWeeks(1));
+////            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
+//                Passport::personalAccessTokensExpireIn(now()->addDays(30));
+////                $responseArray['token'] = $user->createToken('userToken', ['user'])->accessToken;
+//                $responseArray['token'] = $user->createToken('userToken')->accessToken;
+//                $responseArray['expire'] = "30";
+//                return response()->json($responseArray, 200);
+//            } else {
+//                return response()->json([
+//                    'error' => 'unauthorized'
+//                ], 401);
+//            }
+//        } else {
+//            return response()->json([
+//                'error' => 'unauthorized'
+//            ], 401);
+//        }
+//    }
 
 
     public function getMenus()
@@ -110,6 +108,7 @@ class ApiController extends Controller
     public function imageFromCategory($cid)
     {
         $responseArray = [];
+        // can not cache pagination data //
 //        if (Cache::has('imageC'.$cid)) {
 //            $a = Cache::get('imageC'.$cid);
 //        } else {
@@ -117,8 +116,10 @@ class ApiController extends Controller
 //        }
         $images = Image::where('category_id', $cid)->orderBy('id', 'DESC')->paginate(50);
         $images = $this->manupulateImages($images);
-        $responseArray['subCategory'] = SubCategory::where('category_id', $cid)->where('image_thumb', '!=', null)
-                                                                        ->where('image_background', '!=', null)->get();
+//        foreach ($images as $i) {
+//            $i['subCategory'] = SubCategory::find($i->sub_category_id);
+//        }
+        $responseArray['subCategory'] = SubCategory::where('category_id', $cid)->where('image_thumb', '!=', null)->where('image_background', '!=', null)->get();
         $responseArray['images'] = $images;
         return response()->json($responseArray, 200);
     }
@@ -128,6 +129,7 @@ class ApiController extends Controller
     public function imageFromSubCategory($scid)
     {
         $responseArray = [];
+        // can not cache pagination data //
 //        if (Cache::has('imageSC'.$scid)) {
 //            $a = Cache::get('imageSC'.$scid);
 //        } else {
