@@ -37,7 +37,7 @@ class BannerImageController extends Controller
             $i = new BannerImage;
             $i->category_id = $request->category;
             $imgThumb = $request->banner;
-            $img_name = time() . urlencode(str_replace(" ", "_", $imgThumb->getClientOriginalName()));
+            $img_name = time() . str_replace(" ", "_", $imgThumb->getClientOriginalName());
             $a = $imgThumb->move('uploads/images/banner', $img_name);
             $d = 'uploads/images/banner/' . $img_name;
             $i->image = $d;

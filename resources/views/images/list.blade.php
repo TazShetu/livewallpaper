@@ -43,13 +43,13 @@
                                 <td>{{$v->category_name}}</td>
                                 <td>{{$v->sub_category_name}}</td>
                                 <td>
-                                    <img src="{{asset($v->image_thumb)}}" width="50">
+                                    <img src="{{asset($v->image_thumb)}}" width="50" height="50">
                                 </td>
                                 <td>
-                                    <img src="{{asset($v->image_1)}}" width="100">
+                                    <img src="{{asset($v->image_1)}}" width="100" height="100">
                                 </td>
                                 <td>
-                                    <img src="{{asset($v->image_2)}}" width="100">
+                                    <img src="{{asset($v->image_2)}}" width="100" height="100">
                                 </td>
                                 <td>
                                     <form action="{{route('image.delete', ['iid' => $v->id])}}" method="POST"

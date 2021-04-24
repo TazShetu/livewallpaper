@@ -199,7 +199,7 @@ class ACLController extends Controller
 
     public function test()
     {
-        dd('test');
+        dd('inside test');
     }
 
 
