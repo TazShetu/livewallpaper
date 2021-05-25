@@ -84,12 +84,12 @@
                                 <span class="help-block text-danger">{{$errors->first('image_main')}}</span>
                             @endif
                         </div>
-                        <div class="form-group">
+                        <div class="form-group hideFirst show2">
                             <label class="col-md-3 col-xs-12 control-label">
                                 <span id="imagePlaceholderLabel">Placeholder Image</span>
                             </label>
                             <div class="col-md-6 col-xs-12">
-                                <input type="file" name="image_placeholder" required>
+                                <input type="file" name="image_placeholder">
                             </div>
                             @if($errors->has('image_placeholder'))
                                 <span class="help-block text-danger">{{$errors->first('image_placeholder')}}</span>
@@ -130,11 +130,16 @@
                 $(".hideFirst").hide();
                 $(".sid" + sid).show();
                 if(sid == 3) {
+                    $(".show2").show();
                     $("#imageMainLabel").text('Lock Screen Image');
                     $("#imagePlaceholderLabel").text('Home Screen Image');
-                } else {
+                } else if (sid == 2) {
+                    $(".show2").show();
                     $("#imageMainLabel").text('Main Image');
                     $("#imagePlaceholderLabel").text('Placeholder Image');
+                } else if (sid == 1) {
+                    $("#imageMainLabel").text('Main Image');
+                    // $("#imagePlaceholderLabel").text('Placeholder Image');
                 }
             });
         });

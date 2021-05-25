@@ -46,10 +46,20 @@
                                     <img src="{{asset($v->image_thumb)}}" width="50" height="50">
                                 </td>
                                 <td>
-                                    <img src="{{asset($v->image_1)}}" width="100" height="100">
+                                    @if($v->category_id != 2)
+                                        <img src="{{asset($v->image_1)}}" width="100" height="100">
+                                    @else
+                                        Your browser doesn't
+                                        <br>
+                                        support mov file
+                                    @endif
                                 </td>
                                 <td>
-                                    <img src="{{asset($v->image_2)}}" width="100" height="100">
+                                    @if($v->category_id != 1)
+                                        <img src="{{asset($v->image_2)}}" width="100" height="100">
+                                    @else
+                                        N/A
+                                    @endif
                                 </td>
                                 <td>
                                     <form action="{{route('image.delete', ['iid' => $v->id])}}" method="POST"

@@ -15,7 +15,7 @@ class CreateImagesTable extends Migration
             $table->unsignedBigInteger('sub_category_id')->index();
             $table->string('image_thumb')->unique();
             $table->string('image_1')->unique();
-            $table->string('image_2')->unique();
+            $table->string('image_2')->nullable();
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')
