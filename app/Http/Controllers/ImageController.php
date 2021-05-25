@@ -70,7 +70,7 @@ class ImageController extends Controller
 //            $this->imageCidCache($i->category_id);
 //            $this->imageScidCache($i->sub_category_id);
             $this->homeCache();
-            Session::flash('success', "The image has benn uploaded successfully.");
+            Session::flash('success', "The image has been uploaded successfully.");
             return redirect()->back();
         } else {
             abort(403);
@@ -110,7 +110,7 @@ class ImageController extends Controller
 //                $this->imageCidCache($cid);
 //                $this->imageScidCache($scid);
                 $this->homeCache();
-                Session::flash('success', "The image has benn deleted successfully.");
+                Session::flash('success', "The image has been deleted successfully.");
                 return redirect()->back();
             } else {
                 abort(404);

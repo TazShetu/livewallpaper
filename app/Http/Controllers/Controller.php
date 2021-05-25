@@ -26,11 +26,17 @@ class Controller extends BaseController
                 $i['image_homeScreen'] = $i->image_2;
                 $i['image_main'] = null;
                 $i['image_placeholder'] = null;
+                $i['type'] = 'theme';
             } else {
                 $i['image_main'] = $i->image_1;
                 $i['image_placeholder'] = $i->image_2;
                 $i['image_lockScreen'] = null;
                 $i['image_homeScreen'] = null;
+                if (($i->category_id * 1) == 1) {
+                    $i['type'] = 'static';
+                } elseif (($i->category_id * 1) == 2) {
+                    $i['type'] = 'live';
+                }
             }
             unset($i['image_1']);
             unset($i['image_2']);

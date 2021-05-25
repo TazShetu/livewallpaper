@@ -11,6 +11,7 @@ class CategoriesTableSeeder extends Seeder
 
     public function run()
     {
+        // can not change category order
         $Categories = [
             0 => ['Static'],
             1 => ['Live'],

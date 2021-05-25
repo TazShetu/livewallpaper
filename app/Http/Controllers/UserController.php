@@ -19,7 +19,8 @@ class UserController extends Controller
     public function users()
     {
         if (Auth::user()->isAbleTo('user')) {
-            $users = User::where('id', '>', '1')->where('is_app', null)->get();
+//            $users = User::where('id', '>', '6')->where('is_app', null)->get();
+            $users = User::where('id', '>', '5')->where('is_app', null)->get();
             foreach ($users as $u) {
                 $u['role'] = $u->roles()->get();
             }
