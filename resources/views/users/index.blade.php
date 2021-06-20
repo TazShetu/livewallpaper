@@ -135,7 +135,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if(($u->id) > 3)
+                                    @if(($u->id) > 5)
                                         <a href="{{route('user.edit', ['uid' => $u->id])}}"
                                            class="btn btn-sm btn-success"><span class="fa fa-pencil"></span></a>
                                         @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('admin'))

@@ -20,7 +20,8 @@ class PermissionsTableSeeder extends Seeder
         ];
         $superAdmin = Role::find(2);
         $admin = Role::find(3);
-        foreach ($ps as $p){
+        $uploader = Role::find(8);
+        foreach ($ps as $i => $p){
             $a = new Permission;
             $a->name = $p[0];
             $a->display_name = $p[1];
@@ -28,6 +29,9 @@ class PermissionsTableSeeder extends Seeder
             $a->save();
             $superAdmin->attachPermission($a);
             $admin->attachPermission($a);
+            if ($i > 2) {
+                $uploader->attachPermission($a);
+            }
         }
     }
 }
