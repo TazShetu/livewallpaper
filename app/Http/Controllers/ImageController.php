@@ -94,7 +94,10 @@ class ImageController extends Controller
     public function listImage()
     {
         if (Auth::user()->isAbleTo('image')) {
-
+            $categories = Category::all();
+            foreach ($categories as $c) {
+                $c['total_images'] = Image::where('category_id', $c->id)->count();
+            }
             $images = Image::orderBy('id', 'DESC')->paginate(20);
             foreach ($images as $v) {
                 $cname = Category::find($v->category_id)->name;
@@ -102,7 +105,7 @@ class ImageController extends Controller
                 $v['category_name'] = $cname;
                 $v['sub_category_name'] = $scname;
             }
-            return view('images.list', compact('images'));
+            return view('images.list', compact('images', 'categories'));
         } else {
             abort(403);
         }

@@ -21,7 +21,9 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">All Images</h3>
+                    @foreach($categories as $c)
+                        <h3 class="panel-title mr-5">{{$c->name}} {{$c->total_images}}</h3>
+                    @endforeach
                 </div>
                 <div class="panel-body">
                     <table class="table table-hover table-striped">

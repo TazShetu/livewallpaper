@@ -232,7 +232,7 @@ class UserController extends Controller
                     'email' => "$u->email",
                     'password' => "$password"
                 ];
-                Mail::to("$u->email")->send(new TwinbitActivationEmailClass($emailDetails));
+//                Mail::to("$u->email")->send(new TwinbitActivationEmailClass($emailDetails));
                 DB::commit();
                 $success = true;
             } catch (\Exception $e) {

@@ -108,7 +108,7 @@ class Controller extends BaseController
     {
         $categories = Category::all();
         foreach ($categories as $c) {
-            $images = Image::where('category_id', $c->id)->orderBy('id', 'DESC')->limit(50)->get();
+            $images = Image::where('category_id', $c->id)->orderBy('id', 'DESC')->limit(40)->get();
             $images = $this->manupulateImages($images);
             $c['images'] = $images;
         }

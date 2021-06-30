@@ -15,7 +15,7 @@ class CategoriesTableSeeder extends Seeder
         $Categories = [
             0 => ['Static'],
             1 => ['Live'],
-            2 => ['Theme'],
+            2 => ['Themes'],
         ];
         foreach ($Categories as $vc) {
             $c = new Category;

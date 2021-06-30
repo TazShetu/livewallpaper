@@ -45,5 +45,10 @@ class UsersTableSeeder extends Seeder
             'email' => 'sakib.twinbit@gmail.com',
             'password' => bcrypt('fg345fU%S]2gerfdh6567'),
         ]);
+//        User::create([
+//            'name' => 'Tawabul',
+//            'email' => 'tawabul.twinbit@gmail.com',
+//            'password' => bcrypt('php '),
+//        ]);
     }
 }
