@@ -18,6 +18,7 @@ class RolesTableSeeder extends Seeder
             4 => ["dev", "Developer", "Developer"],
             5 => ["j_dev", "Junior Developer", "Junior Developer"],
             6 => ["i_dev", "Intern Developer", "Intern Developer"],
+            7 => ["upload", "Uploader", "Uploader"],
         ];
 
         foreach ($rs as $r) {
@@ -33,5 +34,10 @@ class RolesTableSeeder extends Seeder
         $ar = Role::find(3);
         $sau->attachRole($sar);
         $au->attachRole($ar);
+        $u1 = User::find(6);
+        $u2 = User::find(7);
+        $ru = Role::find(8);
+        $u1->attachRole($ru);
+        $u2->attachRole($ru);
     }
 }

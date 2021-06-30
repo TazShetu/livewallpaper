@@ -21,7 +21,9 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">All Images</h3>
+                    @foreach($categories as $c)
+                        <h3 class="panel-title mr-5">{{$c->name}} {{$c->total_images}}</h3>
+                    @endforeach
                 </div>
                 <div class="panel-body">
                     <table class="table table-hover table-striped">
@@ -46,10 +48,20 @@
                                     <img src="{{asset($v->image_thumb)}}" width="50" height="50">
                                 </td>
                                 <td>
-                                    <img src="{{asset($v->image_1)}}" width="100" height="100">
+                                    @if($v->category_id != 2)
+                                        <img src="{{asset($v->image_1)}}" width="100" height="100">
+                                    @else
+                                        Your browser doesn't
+                                        <br>
+                                        support mov file
+                                    @endif
                                 </td>
                                 <td>
-                                    <img src="{{asset($v->image_2)}}" width="100" height="100">
+                                    @if($v->category_id != 1)
+                                        <img src="{{asset($v->image_2)}}" width="100" height="100">
+                                    @else
+                                        N/A
+                                    @endif
                                 </td>
                                 <td>
                                     <form action="{{route('image.delete', ['iid' => $v->id])}}" method="POST"

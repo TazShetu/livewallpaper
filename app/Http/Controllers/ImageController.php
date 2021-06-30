@@ -37,40 +37,53 @@ class ImageController extends Controller
                 'sub_category' => 'required',
                 'image_thumb' => 'required|file',
                 'image_main' => 'required|file',
-                'image_placeholder' => 'required|file',
             ]);
+            if ($request->category != 1) {
+                $request->validate([
+                    'image_placeholder' => 'required|file',
+                ]);
+            }
+
             $i = new Image;
             $i->category_id = $request->category;
             $i->sub_category_id = $request->sub_category;
 
             $imgThumb = $request->image_thumb;
             $imgOne = $request->image_main;
-            $imgTwo = $request->image_placeholder;
             $img_name = time() . str_replace(" ", "_", $imgThumb->getClientOriginalName());
             $a = $imgThumb->move('uploads/images', $img_name);
             $d = 'uploads/images/' . $img_name;
             $i->image_thumb = $d;
-            if (($imgThumb->getClientOriginalName() == $imgOne->getClientOriginalName())
-                || ($imgThumb->getClientOriginalName() == $imgTwo->getClientOriginalName())) {
+            if ($imgThumb->getClientOriginalName() == $imgOne->getClientOriginalName()) {
                 sleep(1);
             }
             $img_name1 = time() . str_replace(" ", "_", $imgOne->getClientOriginalName());
             $a = $imgOne->move('uploads/images', $img_name1);
             $d1 = 'uploads/images/' . $img_name1;
             $i->image_1 = $d1;
-            if ($imgOne->getClientOriginalName() == $imgTwo->getClientOriginalName()) {
-                sleep(1);
+
+            if ($request->category == 1) {
+                $i->image_2 = null;
+            } else {
+                $imgTwo = $request->image_placeholder;
+                if ($imgThumb->getClientOriginalName() == $imgTwo->getClientOriginalName()) {
+                    sleep(1);
+                }
+                if ($imgOne->getClientOriginalName() == $imgTwo->getClientOriginalName()) {
+                    sleep(1);
+                }
+                $img_name2 = time() . str_replace(" ", "_", $imgTwo->getClientOriginalName());
+                $a = $imgTwo->move('uploads/images', $img_name2);
+                $d2 = 'uploads/images/' . $img_name2;
+                $i->image_2 = $d2;
             }
-            $img_name2 = time() . str_replace(" ", "_", $imgTwo->getClientOriginalName());
-            $a = $imgTwo->move('uploads/images', $img_name2);
-            $d2 = 'uploads/images/' . $img_name2;
-            $i->image_2 = $d2;
+
 
             $i->save();
 //            $this->imageCidCache($i->category_id);
 //            $this->imageScidCache($i->sub_category_id);
             $this->homeCache();
-            Session::flash('success', "The image has benn uploaded successfully.");
+            Session::flash('success', "The image has been uploaded successfully.");
             return redirect()->back();
         } else {
             abort(403);
@@ -81,7 +94,10 @@ class ImageController extends Controller
     public function listImage()
     {
         if (Auth::user()->isAbleTo('image')) {
-
+            $categories = Category::all();
+            foreach ($categories as $c) {
+                $c['total_images'] = Image::where('category_id', $c->id)->count();
+            }
             $images = Image::orderBy('id', 'DESC')->paginate(20);
             foreach ($images as $v) {
                 $cname = Category::find($v->category_id)->name;
@@ -89,7 +105,7 @@ class ImageController extends Controller
                 $v['category_name'] = $cname;
                 $v['sub_category_name'] = $scname;
             }
-            return view('images.list', compact('images'));
+            return view('images.list', compact('images', 'categories'));
         } else {
             abort(403);
         }
@@ -110,7 +126,7 @@ class ImageController extends Controller
 //                $this->imageCidCache($cid);
 //                $this->imageScidCache($scid);
                 $this->homeCache();
-                Session::flash('success', "The image has benn deleted successfully.");
+                Session::flash('success', "The image has been deleted successfully.");
                 return redirect()->back();
             } else {
                 abort(404);
@@ -121,7 +137,17 @@ class ImageController extends Controller
     }
 
 
-
+//    public function test()
+//    {
+//        $is = Image::all();
+//        foreach ($is as $a) {
+//            if ($a->image_2) {
+//                unlink($a->image_2);
+//            }
+//            $a->image_2 = null;
+//            $a->update();
+//        }
+//    }
 
 
 }

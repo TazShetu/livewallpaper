@@ -114,7 +114,7 @@ class ApiController extends Controller
 //        } else {
 //            $a = $this->imageCidCacheMain($cid);
 //        }
-        $images = Image::where('category_id', $cid)->orderBy('id', 'DESC')->paginate(50);
+        $images = Image::where('category_id', $cid)->orderBy('id', 'DESC')->paginate(30);
         $images = $this->manupulateImages($images);
 //        foreach ($images as $i) {
 //            $i['subCategory'] = SubCategory::find($i->sub_category_id);
@@ -135,7 +135,7 @@ class ApiController extends Controller
 //        } else {
 //            $a = $this->imageScidCacheMain($scid);
 //        }
-        $images = Image::where('sub_category_id', $scid)->orderBy('id', 'DESC')->paginate(50);
+        $images = Image::where('sub_category_id', $scid)->orderBy('id', 'DESC')->paginate(30);
         $images = $this->manupulateImages($images);
         $responseArray['images'] = $images;
         return response()->json($responseArray, 200);

@@ -17,12 +17,12 @@ class UsersTableSeeder extends Seeder
         User::create([
             'name' => 'Super Admin',
             'email' => 'sa@g.com',
-            'password' => bcrypt('123456789A'),
+            'password' => bcrypt('%c[6,fU%S[s]y2r>'),
         ]);
         User::create([
             'name' => 'Admin',
             'email' => 'a@g.com',
-            'password' => bcrypt('123456789A'),
+            'password' => bcrypt('%c[6,fU%S[s]y2r>'),
         ]);
         User::create([
             'name' => 'General User App',
@@ -35,5 +35,20 @@ class UsersTableSeeder extends Seeder
             'email' => 'app_user@gmail.com',
             'password' => bcrypt('e{AsPzB,W9:?AaSw'),
         ]);
+        User::create([
+            'name' => 'Tanjemul',
+            'email' => 'tanjemul.twinbit@gmail.com',
+            'password' => bcrypt('5c[6fU%S]2r>ger'),
+        ]);
+        User::create([
+            'name' => 'Sakib',
+            'email' => 'sakib.twinbit@gmail.com',
+            'password' => bcrypt('fg345fU%S]2gerfdh6567'),
+        ]);
+//        User::create([
+//            'name' => 'Tawabul',
+//            'email' => 'tawabul.twinbit@gmail.com',
+//            'password' => bcrypt('php '),
+//        ]);
     }
 }
