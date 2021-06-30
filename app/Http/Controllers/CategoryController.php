@@ -44,6 +44,7 @@ class CategoryController extends Controller
                 }
                 $this->menuCache();
                 $this->homeCache();
+                $this->homeCache_v2();
 
                 $sc = new SubCategory;
                 $sc->category_id = $c->id;
@@ -106,6 +107,7 @@ class CategoryController extends Controller
                 $this->newCache();
                 $this->menuCache();
                 $this->homeCache();
+                $this->homeCache_v2();
 //                $this->imageCidCache($cid);
 
                 Session::flash('success', "The Category has been updated successfully.");

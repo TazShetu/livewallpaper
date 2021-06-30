@@ -32,6 +32,8 @@ Route::get('/v1/home', [ApiController::class, 'home'])->middleware([AuthBasic::c
 Route::get('/v1/category/{cid}/images', [ApiController::class, 'imageFromCategory'])->middleware([AuthBasic::class]);
 Route::get('/v1/sub_category/{scid}/images', [ApiController::class, 'imageFromSubCategory'])->middleware([AuthBasic::class]);
 
+Route::get('/v2/home', [ApiController::class, 'home_v2'])->middleware([AuthBasic::class]);
+
 
 
 

@@ -17,7 +17,7 @@ class ImageController extends Controller
     public function upload()
     {
         if (Auth::user()->isAbleTo('image')) {
-            $categories = Category::all();
+            $categories = Category::where('id', '<', 4)->get();
             $subCategories = SubCategory::all();
             foreach ($subCategories as $sb) {
                 $sb['category_name'] = Category::find($sb->category_id)->name;
@@ -45,8 +45,14 @@ class ImageController extends Controller
             }
 
             $i = new Image;
-            $i->category_id = $request->category;
             $i->sub_category_id = $request->sub_category;
+            if ((($request->sub_category * 1) == 2) || (($request->sub_category * 1) == 4)) {
+                $i->category_id = 4;
+            } elseif (($request->sub_category * 1) == 3) {
+                $i->category_id = 5;
+            } else {
+                $i->category_id = $request->category;
+            }
 
             $imgThumb = $request->image_thumb;
             $imgOne = $request->image_main;
@@ -83,6 +89,7 @@ class ImageController extends Controller
 //            $this->imageCidCache($i->category_id);
 //            $this->imageScidCache($i->sub_category_id);
             $this->homeCache();
+            $this->homeCache_v2();
             Session::flash('success', "The image has been uploaded successfully.");
             return redirect()->back();
         } else {
@@ -119,13 +126,20 @@ class ImageController extends Controller
             if ($i) {
                 $cid = $i->category_id;
                 $scid = $i->sub_category_id;
-                unlink($i->image_thumb);
-                unlink($i->image_1);
-                unlink($i->image_2);
+                if (file_exists($i->image_thumb)) {
+                    unlink($i->image_thumb);
+                }
+                if (file_exists($i->image_1)) {
+                    unlink($i->image_1);
+                }
+                if (file_exists($i->image_2)) {
+                    unlink($i->image_2);
+                }
                 $i->delete();
 //                $this->imageCidCache($cid);
 //                $this->imageScidCache($scid);
                 $this->homeCache();
+                $this->homeCache_v2();
                 Session::flash('success', "The image has been deleted successfully.");
                 return redirect()->back();
             } else {
@@ -139,14 +153,24 @@ class ImageController extends Controller
 
 //    public function test()
 //    {
-//        $is = Image::all();
-//        foreach ($is as $a) {
-//            if ($a->image_2) {
-//                unlink($a->image_2);
-//            }
-//            $a->image_2 = null;
-//            $a->update();
+//        $subcs = SubCategory::where('id', 2)->get();
+//        foreach ($subcs as $s) {
+//            $images = Image::where('sub_category_id', 2)->orderBy('id', 'DESC')->limit(40)->get();
+//            $images = $this->manupulateImages($images);
+//            $s['images'] = $images;
 //        }
+//        $categories = Category::all();
+//        foreach ($categories as $c) {
+//            $images = Image::where('category_id', $c->id)->orderBy('id', 'DESC')->limit(40)->get();
+//            $images = $this->manupulateImages($images);
+//            $c['images'] = $images;
+//        }
+//
+//        $collection = collect($subcs);
+//        $merged     = $collection->merge($categories);
+//        $result[]   = $merged->all();
+//
+//        dd($merged->all());
 //    }
 
 

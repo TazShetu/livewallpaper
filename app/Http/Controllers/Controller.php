@@ -32,10 +32,10 @@ class Controller extends BaseController
                 $i['image_placeholder'] = $i->image_2;
                 $i['image_lockScreen'] = null;
                 $i['image_homeScreen'] = null;
-                if (($i->category_id * 1) == 1) {
-                    $i['type'] = 'static';
-                } elseif (($i->category_id * 1) == 2) {
+                if (($i->category_id * 1) == 2) {
                     $i['type'] = 'live';
+                } else {
+                    $i['type'] = 'static';
                 }
             }
             unset($i['image_1']);
@@ -106,7 +106,7 @@ class Controller extends BaseController
     }
     public function homeCacheMain()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('order_of', 'DESC')->get();
         foreach ($categories as $c) {
             $images = Image::where('category_id', $c->id)->orderBy('id', 'DESC')->limit(40)->get();
             $images = $this->manupulateImages($images);
@@ -150,5 +150,36 @@ class Controller extends BaseController
 //    }
 
 
+    public function homeCache_v2()
+    {
+        if (Cache::has('home_v2')) {
+            Cache::forget('home_v2');
+        }
+        $this->homeCacheMain_v2();
+    }
+
+
+    public function homeCacheMain_v2()
+    {
+        $subcs = SubCategory::where('id', 2)->orWhere('id', 3)->get();
+        foreach ($subcs as $s) {
+            $s['api'] = 'sub_category';
+            $images = Image::where('sub_category_id', 2)->orderBy('id', 'DESC')->limit(40)->get();
+            $images = $this->manupulateImages($images);
+            $s['images'] = $images;
+        }
+        $categories = Category::all();
+        foreach ($categories as $c) {
+            $c['api'] = 'category';
+            $images = Image::where('category_id', $c->id)->orderBy('id', 'DESC')->limit(40)->get();
+            $images = $this->manupulateImages($images);
+            $c['images'] = $images;
+        }
+
+        $collection = collect($subcs);
+        $merged     = $collection->merge($categories);
+        Cache::put('home_v2', $merged->all(), now()->addMonths(1));
+        return $merged->all();
+    }
 
 }

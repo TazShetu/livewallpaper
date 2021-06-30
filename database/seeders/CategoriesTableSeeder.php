@@ -23,6 +23,7 @@ class CategoriesTableSeeder extends Seeder
             $c->save();
         }
 
+        // can not change sub category order till trending now (id 4)
         $SubCategories = [
             // for Static
             0 => ['Default', 'Trending', 'Today Now', 'Trending Now', 'Sunset', 'Animal', 'Nature', 'Flower', 'Christmas', 'New Year', 'Abstract', 'Music', 'Art', 'Fortnite', 'Cyberpunk', 'Games', 'Super Heroes', '3D'],

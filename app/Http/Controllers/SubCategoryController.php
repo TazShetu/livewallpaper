@@ -16,7 +16,7 @@ class SubCategoryController extends Controller
     public function index()
     {
         if (Auth::user()->isAbleTo('sub_category')) {
-            $subCategories = SubCategory::where('name', '!=', 'Default')->get();
+            $subCategories = SubCategory::where('name', '!=', 'Default')->where('id', '>', 4)->get();
             foreach ($subCategories as $sb) {
                 $sb['category_name'] = Category::find($sb->category_id)->name;
             }

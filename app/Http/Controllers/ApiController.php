@@ -89,11 +89,7 @@ class ApiController extends Controller
     public function home()
     {
         $responseArray = [];
-        if (Cache::has('banner')) {
-            $a = Cache::get('banner');
-        } else {
-            $a = $this->bannerCacheMain();
-        }
+        $a = $this->banner();
         $responseArray['banner'] = $a;
         if (Cache::has('home')) {
             $categories = Cache::get('home');
@@ -125,7 +121,6 @@ class ApiController extends Controller
     }
 
 
-
     public function imageFromSubCategory($scid)
     {
         $responseArray = [];
@@ -139,6 +134,32 @@ class ApiController extends Controller
         $images = $this->manupulateImages($images);
         $responseArray['images'] = $images;
         return response()->json($responseArray, 200);
+    }
+
+
+    public function home_v2()
+    {
+        $responseArray = [];
+        $a = $this->banner();
+        $responseArray['banner'] = $a;
+        if (Cache::has('home_v2')) {
+            $categories = Cache::get('home_v2');
+        } else {
+            $categories = $this->homeCacheMain_v2();
+        }
+        $responseArray['categories'] = $categories;
+        return response()->json($responseArray, 200);
+    }
+
+
+    public function banner()
+    {
+        if (Cache::has('banner')) {
+            $a = Cache::get('banner');
+        } else {
+            $a = $this->bannerCacheMain();
+        }
+        return $a;
     }
 
 
